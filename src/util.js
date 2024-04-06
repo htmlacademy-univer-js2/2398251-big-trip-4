@@ -37,6 +37,10 @@ function formatStringToTime(date) {
   return dayjs(date).format('HH:mm');
 }
 
+function firstLetterToLowerCase(type) {
+  return type.toLowerCase();
+}
+
 function getPointDuration(point) {
   const timeDiff = dayjs(point.dateTo).diff(dayjs(point.dateFrom));
 
@@ -76,5 +80,5 @@ function getDate({ next }) {
 }
 
 export {
-  getRandomInteger, getRandomValue, formatStringToDateTime, formatStringToShortDate, formatStringToTime, getPointDuration, getDate
+  getRandomInteger, getRandomValue, formatStringToDateTime, formatStringToShortDate, formatStringToTime, getPointDuration, getDate, firstLetterToLowerCase
 };
