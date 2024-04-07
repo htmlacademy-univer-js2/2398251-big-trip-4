@@ -115,7 +115,7 @@ function createPointEditTemplate({ point, pointDestination, pointOffers }) {
   </li>`);
 }
 
-export default class EditPointView extends AbstractView {
+export default class PointEditView extends AbstractView {
   #point = null;
   #pointDestination = null;
   #pointOffers = null;
@@ -137,7 +137,7 @@ export default class EditPointView extends AbstractView {
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#resetButtonClickHandler);
   }
 
-  getTemplate() {
+  get template() {
     return createPointEditTemplate({
       point: this.#point,
       pointDestination: this.#pointDestination,
