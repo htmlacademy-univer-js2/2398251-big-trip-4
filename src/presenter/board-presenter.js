@@ -4,6 +4,7 @@ import EventListView from '../view/event-list-view.js';
 import SortView from '../view/sort-view.js';
 import PointView from '../view/point-view.js';
 import PointEditView from '../view/point-edit-view.js';
+import EmptyListView from '../view/empty-list-view.js';
 
 export default class BoardPresenter {
   #sortComponent = new SortView();
@@ -20,10 +21,15 @@ export default class BoardPresenter {
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
     this.#pointsModel = pointsModel;
+
+    this.#points = [...this.#pointsModel.get()];
   }
 
   init() {
-    this.#points = [...this.#pointsModel.get()];
+    if (this.#points.length === 0) {
+      render(new EmptyListView(), this.#container);
+      return;
+    }
 
     render(this.#sortComponent, this.#container);
     render(this.#eventListComponent, this.#container);

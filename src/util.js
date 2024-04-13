@@ -37,6 +37,10 @@ function formatStringToTime(date) {
   return dayjs(date).format('HH:mm');
 }
 
+function firstLetterToUpperCase(type) {
+  return type.charAt(0).toUpperCase() + type.slice(1);
+}
+
 function firstLetterToLowerCase(type) {
   return type.toLowerCase();
 }
@@ -79,6 +83,30 @@ function getDate({ next }) {
   return dateToGet;
 }
 
+function isPointFuture(point) {
+  return dayjs().isBefore(point.dateFrom);
+}
+
+function isPointPresent(point) {
+  return dayjs().isAfter(point.dateFrom) && dayjs().isBefore(point.dateTo);
+}
+
+function isPointPast(point) {
+  return dayjs().isAfter(point.dateTo);
+}
+
+
 export {
-  getRandomInteger, getRandomValue, formatStringToDateTime, formatStringToShortDate, formatStringToTime, getPointDuration, getDate, firstLetterToLowerCase
+  getRandomInteger,
+  getRandomValue,
+  formatStringToDateTime,
+  formatStringToShortDate,
+  formatStringToTime,
+  getPointDuration,
+  getDate,
+  firstLetterToLowerCase,
+  firstLetterToUpperCase,
+  isPointFuture,
+  isPointPresent,
+  isPointPast
 };
