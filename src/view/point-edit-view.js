@@ -1,8 +1,6 @@
-//Форма редактирования
-
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { CITIES, POINT_EMPTY, TYPES } from '../const.js';
-import { formatStringToDateTime } from '../util.js';
+import { formatStringToDateTime, firstLetterToLowerCase } from '../util.js';
 
 function createPointCitiesOptionsTemplate() {
   return `
@@ -30,7 +28,7 @@ function createPointTypesTemplate(currentType) {
 function createPointOffersTemplate(pointOffers) {
   const offerItems = pointOffers.map((offer) =>
     `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="event-offer-luggage" checked>
+        <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="event-offer-${firstLetterToLowerCase(offer.title)}" checked>
         <label class="event__offer-label" for="${offer.id}">
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
@@ -40,7 +38,6 @@ function createPointOffersTemplate(pointOffers) {
 
   return `<div class="event__available-offers">${offerItems}</div>`;
 }
-
 
 function createPointEditTemplate({ point, pointDestination, pointOffers }) {
   const { basePrice, dateFrom, dateTo, type } = point;
@@ -118,30 +115,48 @@ function createPointEditTemplate({ point, pointDestination, pointOffers }) {
   </li>`);
 }
 
-export default class PointEditView {
-  constructor({point = POINT_EMPTY, pointDestination, pointOffers}) {
-    this.point = point;
-    this.pointDestination = pointDestination;
-    this.pointOffers = pointOffers;
+export default class PointEditView extends AbstractView {
+  #point = null;
+  #pointDestination = null;
+  #pointOffers = null;
+  #onRollUpClick = null;
+  #onSubmitClick = null;
+  #onResetClick = null;
+
+  constructor({point = POINT_EMPTY, pointDestination, pointOffers, onRollUpClick, onSubmitClick, onResetClick}) {
+    super();
+    this.#point = point;
+    this.#pointDestination = pointDestination;
+    this.#pointOffers = pointOffers;
+    this.#onRollUpClick = onRollUpClick;
+    this.#onSubmitClick = onSubmitClick;
+    this.#onResetClick = onResetClick;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpClickHandler);
+    this.element.querySelector('.event--edit').addEventListener('submit', this.#submitFormHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#resetButtonClickHandler);
   }
 
-  getTemplate() {
+  get template() {
     return createPointEditTemplate({
-      point: this.point,
-      pointDestination: this.pointDestination,
-      pointOffers: this.pointOffers
+      point: this.#point,
+      pointDestination: this.#pointDestination,
+      pointOffers: this.#pointOffers
     });
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
+  #rollUpClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#onRollUpClick();
+  };
 
-    return this.element;
-  }
+  #submitFormHandler = (evt) => {
+    evt.preventDefault();
+    this.#onSubmitClick();
+  };
 
-  removeElement() {
-    this.element = null;
-  }
+  #resetButtonClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#onResetClick();
+  };
 }
