@@ -95,6 +95,10 @@ function isPointPast(point) {
   return dayjs().isAfter(point.dateTo);
 }
 
+function updateItem(items, update) {
+  return items.map((item) => item.id === update.id ? update : item);
+}
+
 
 export {
   getRandomInteger,
@@ -108,5 +112,6 @@ export {
   firstLetterToUpperCase,
   isPointFuture,
   isPointPresent,
-  isPointPast
+  isPointPast,
+  updateItem
 };
