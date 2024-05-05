@@ -42,14 +42,14 @@ export default class BoardPresenter {
   #renderPoint = (point) => {
     const pointComponent = new PointView({
       point,
-      pointDestination: this.#destinationsModel.getById(point.destination),
+      pointDestination: this.#destinationsModel.get()[0],
       pointOffers: this.#offersModel.getByType(point.type),
       onRollUpClick: pointRollUpClickHandler
     });
 
     const editPointComponent = new PointEditView({
       point,
-      pointDestination: this.#destinationsModel.getById(point.destination),
+      pointDestination: this.#destinationsModel.get()[0],
       pointOffers: this.#offersModel.getByType(point.type),
       onSubmitClick: pointSubmitHandler,
       onResetClick: resetButtonClickHandler

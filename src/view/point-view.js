@@ -1,10 +1,10 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import { formatStringToDateTime, formatStringToShortDate, getPointDuration } from '../util.js';
 
-function createPointOffersTemplate(pointOffers) {
+function createPointOffersTemplate(offers) {
   return (
     `<ul class="event__selected-offers">
-        ${pointOffers.map((title, price) => `<li class="event__offer">
+        ${offers.map((title, price) => `<li class="event__offer">
           <span class="event__offer-title">${title}</span>
             &plus;&euro;&nbsp;
           <span class="event__offer-price">${price}</span>
@@ -13,9 +13,10 @@ function createPointOffersTemplate(pointOffers) {
   );
 }
 
-function createPointTemplate (point, pointDestination) {
+function createPointTemplate ({ point, pointDestination, pointOffers }) {
   const { basePrice, dateFrom, dateTo, isFavorite, offers, type } = point;
   const favoriteClass = isFavorite ? 'event__favorite-btn--active' : '';
+
 
   return (`<li class="trip-events__item">
   <div class="event">
@@ -36,9 +37,7 @@ function createPointTemplate (point, pointDestination) {
       &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
     </p>
     <h4 class="visually-hidden">Offers:</h4>
-
-    ${createPointOffersTemplate({ offers })}
-
+    ${createPointOffersTemplate(offers)}
     <button class="event__favorite-btn ${favoriteClass}" type="button">
       <span class="visually-hidden">Add to favorite</span>
       <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
