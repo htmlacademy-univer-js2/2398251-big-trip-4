@@ -72,6 +72,11 @@ const FilterTypes = {
   PAST: 'past',
 };
 
+const Mode = {
+  DEFAULT: 'default',
+  EDITING: 'editing',
+};
+
 const OFFER_COUNT = Math.floor(Math.random() * 4 + 1);
 const DESTINATION_COUNT = 5;
 const POINT_COUNT = 5;
@@ -88,5 +93,6 @@ export {
   OFFER_COUNT,
   DESTINATION_COUNT,
   POINT_COUNT,
-  FilterTypes
+  FilterTypes,
+  Mode
 };
