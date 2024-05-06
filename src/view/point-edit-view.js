@@ -118,7 +118,7 @@ export default class PointEditView extends AbstractView {
     this.#onSubmitClick = onSubmitClick;
     this.#onResetClick = onResetClick;
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpClickHandler);
+    //this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpClickHandler);
     this.element.querySelector('.event--edit').addEventListener('submit', this.#submitFormHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#resetButtonClickHandler);
   }
