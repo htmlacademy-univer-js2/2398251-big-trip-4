@@ -26,7 +26,7 @@ function createPointTypesTemplate(currentType) {
 }
 
 function createPointOffersTemplate(pointOffers) {
-  const offerItems = pointOffers.map((offer) =>
+  const offerItems = pointOffers.pointOffers.offers[0].offers.map((offer) =>
     `<div class="event__offer-selector">
         <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="event-offer-${firstLetterToLowerCase(offer.title)}" checked>
         <label class="event__offer-label" for="${offer.id}">
@@ -52,27 +52,20 @@ function createPointEditTemplate({ point, pointDestination, pointOffers }) {
             <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
           </label>
           <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
-
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
-
               ${createPointTypesTemplate(type)}
-
             </fieldset>
           </div>
         </div>
-
         <div class="event__field-group  event__field-group--destination">
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${pointDestination.name}" list="destination-list-1">
-
           ${createPointCitiesOptionsTemplate()}
-
         </div>
-
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
           <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatStringToDateTime(dateFrom)}">
@@ -80,7 +73,6 @@ function createPointEditTemplate({ point, pointDestination, pointOffers }) {
           <label class="visually-hidden" for="event-end-time-1">To</label>
           <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatStringToDateTime(dateTo)}">
         </div>
-
         <div class="event__field-group  event__field-group--price">
           <label class="event__label" for="event-price-1">
             <span class="visually-hidden">Price</span>
@@ -88,7 +80,6 @@ function createPointEditTemplate({ point, pointDestination, pointOffers }) {
           </label>
           <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
         </div>
-
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Cancel</button>
       </header>
@@ -97,17 +88,12 @@ function createPointEditTemplate({ point, pointDestination, pointOffers }) {
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           ${createPointOffersTemplate({ pointOffers })}
-
         </section>
-
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${pointDestination.description}</p>
-
           <div class="event__photos-container">
-
             ${createPointPhotosTemplate(pointDestination)}
-
           </div>
         </section>
       </section>
