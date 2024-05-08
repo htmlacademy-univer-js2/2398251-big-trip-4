@@ -99,6 +99,21 @@ function updateItem(items, update) {
   return items.map((item) => item.id === update.id ? update : item);
 }
 
+function sortPointsByDay(pointA, pointB) {
+  return new Date(pointA.dateFrom) - new Date(pointB.dateFrom);
+}
+
+function sortPointsByPrice(pointA, pointB) {
+  return pointB.basePrice - pointA.basePrice;
+}
+
+function sortPointsByTime(pointA, pointB) {
+  const durationA = new Date(pointA.dateTo) - new Date(pointA.dateFrom);
+  const durationB = new Date(pointB.dateTo) - new Date(pointB.dateFrom);
+
+  return durationB - durationA;
+}
+
 
 export {
   getRandomInteger,
@@ -113,5 +128,8 @@ export {
   isPointFuture,
   isPointPresent,
   isPointPast,
-  updateItem
+  updateItem,
+  sortPointsByDay,
+  sortPointsByPrice,
+  sortPointsByTime
 };
