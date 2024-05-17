@@ -1,10 +1,11 @@
-import { getRandomValue } from '../util.js';
+import Observable from '../framework/observable.js';
 
-export default class DestinationsModel {
+export default class DestinationsModel extends Observable {
   #service = null;
-  #destinations = null;
+  #destinations = [];
 
   constructor(service) {
+    super();
     this.#service = service;
     this.#destinations = this.#service.getDestinations();
   }
@@ -16,9 +17,5 @@ export default class DestinationsModel {
   getById(id) {
     return this.#destinations
       .find((destination) => destination.id === id);
-  }
-
-  getRandomDestination() {
-    return getRandomValue(this.#destinations);
   }
 }

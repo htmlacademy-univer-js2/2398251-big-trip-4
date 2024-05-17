@@ -5,13 +5,16 @@ import EventListView from '../view/event-list-view.js';
 import SortView from '../view/sort-view.js';
 import EmptyListView from '../view/empty-list-view.js';
 import { updateItem } from '../util.js';
-import { SortType } from '../const.js';
+import { SortType, UpdateType } from '../const.js';
 import { sort } from '../utils/sort.js';
 
 export default class BoardPresenter {
+  #container = null;
+
   #sortComponent = null;
   #eventListComponent = new EventListView();
-  #container = null;
+  #messageComponent = null;
+
   #destinationsModel = null;
   #offersModel = null;
   #pointsModel = null;
@@ -29,6 +32,8 @@ export default class BoardPresenter {
     this.#pointsModel = pointsModel;
 
     this.#points = sort[SortType.DAY]([...this.#pointsModel.get()]);
+
+    this.#pointsModel.addObserver(this.#modelEventHandler);
   }
 
   init() {
@@ -94,6 +99,33 @@ export default class BoardPresenter {
     this.#renderSort();
     this.#renderPointContainer();
     this.#renderPoints();
+  };
+
+  #clearBoard = ({resetSortType = false} = {}) => {
+    this.#clearPoints();
+    remove(this.#messageComponent);
+    remove(this.#sortComponent);
+    this.#sortComponent = null;
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DAY;
+    }
+  };
+
+  #modelEventHandler = (updateType, data) => {
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#pointPresenters?.get(data.id)?.init(data);
+        break;
+      case UpdateType.MINOR:
+        this.#clearBoard();
+        this.#renderBoard();
+        break;
+      case UpdateType.MAJOR:
+        this.#clearBoard({resetSortType: true});
+        this.#renderBoard();
+        break;
+    }
   };
 
   #pointChangeHandler = (updatedPoint) => {

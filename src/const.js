@@ -88,6 +88,12 @@ const EnabledSortType = {
   [SortType.OFFERS]: false
 };
 
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR'
+};
+
 const Mode = {
   DEFAULT: 'default',
   EDITING: 'editing',
@@ -112,5 +118,6 @@ export {
   FilterTypes,
   Mode,
   SortType,
-  EnabledSortType
+  EnabledSortType,
+  UpdateType
 };

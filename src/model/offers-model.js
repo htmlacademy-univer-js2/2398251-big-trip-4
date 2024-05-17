@@ -1,10 +1,11 @@
-import { getRandomValue } from '../util.js';
+import Observable from '../framework/observable.js';
 
-export default class OffersModel {
+export default class OffersModel extends Observable {
   #service = null;
-  #offers = null;
+  #offers = [];
 
   constructor(service) {
+    super();
     this.#service = service;
     this.#offers = this.#service.getOffers();
   }
@@ -15,10 +16,6 @@ export default class OffersModel {
 
   getByType(type) {
     return this.#offers
-      .find((offer) => offer.type === type);
-  }
-
-  getRandomOffer() {
-    return getRandomValue(this.#offers);
+      .find((offer) => offer.type === type).offers;
   }
 }
