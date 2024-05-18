@@ -1,11 +1,11 @@
-import { FilterTypes } from '../const.js';
+import { FilterType } from '../const.js';
 import { isPointFuture, isPointPast, isPointPresent } from '../util.js';
 
 const filter = {
-  [FilterTypes.EVERYTHING]: (points) => [...points],
-  [FilterTypes.FUTURE]: (points) => points.filter((point) => isPointFuture(point)),
-  [FilterTypes.PRESENT]: (points) => points.filter((point) => isPointPresent(point)),
-  [FilterTypes.PAST]: (points) => points.filter((point) => isPointPast(point))
+  [FilterType.EVERYTHING]: (points) => [...points],
+  [FilterType.FUTURE]: (points) => points.filter((point) => isPointFuture(point)),
+  [FilterType.PRESENT]: (points) => points.filter((point) => isPointPresent(point)),
+  [FilterType.PAST]: (points) => points.filter((point) => isPointPast(point))
 };
 
 function generateFilters(points) {
@@ -17,4 +17,4 @@ function generateFilters(points) {
   );
 }
 
-export { generateFilters };
+export { generateFilters, filter };

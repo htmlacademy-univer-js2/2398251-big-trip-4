@@ -65,7 +65,7 @@ const Duration = {
   MINUTE: 59
 };
 
-const FilterTypes = {
+const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
   PRESENT: 'present',
@@ -115,7 +115,7 @@ export {
   OFFER_COUNT,
   DESTINATION_COUNT,
   POINT_COUNT,
-  FilterTypes,
+  FilterType,
   Mode,
   SortType,
   EnabledSortType,
