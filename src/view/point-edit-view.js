@@ -1,8 +1,9 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { CITIES, POINT_EMPTY, TYPES, EditType, ButtonLabel } from '../const.js';
 import { formatStringToDateTime} from '../util.js';
-import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import flatpickr from 'flatpickr';
+import he from 'he';
 
 function createSaveButtonTemplate() {
   const label = ButtonLabel.SAVE_DEFAULT;
@@ -100,7 +101,7 @@ function createPointEditTemplate({ state, pointDestination, pointOffers, pointTy
           <label class="event__label  event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentDestination.name}" list="destination-list-1">
+          <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentDestination ? he.encode(currentDestination.name) : ''}" list="destination-list-1">
           ${createPointCitiesOptionsTemplate()}
         </div>
         <div class="event__field-group  event__field-group--time">
@@ -115,7 +116,7 @@ function createPointEditTemplate({ state, pointDestination, pointOffers, pointTy
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}">
         </div>
         ${createPointEditControlsTemplate({pointType})}
       </header>
@@ -235,7 +236,7 @@ export default class PointEditView extends AbstractStatefulView {
   };
 
   #destinationChangeHandler = (evt) => {
-    const selectedDestination = this.#pointDestination.find((pointDestination) => pointDestination.name === evt.target.value);
+    const selectedDestination = this.#pointDestination.find((destination) => destination.name === evt.target.value);
     const selectedDestinationId = (selectedDestination) ? selectedDestination.id : null;
 
     this.updateElement({
