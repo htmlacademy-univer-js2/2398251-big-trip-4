@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { formatStringToDateTime, formatStringToShortDate, getPointDuration } from '../util.js';
+import { formatStringToDateTime, formatStringToShortDate, getPointDuration, formatStringToTime } from '../util.js';
 
 function createPointOffersTemplate({ offersId, pointOffers }) {
   const selectedOffers = pointOffers.filter((offer) => offersId.includes(offer.id));
@@ -34,7 +34,7 @@ function createPointTemplate({ point, pointDestination, pointOffers }) {
       <p class="event__time">
         <time class="event__start-time" datetime="${formatStringToDateTime(dateFrom)}">${formatStringToShortDate(dateFrom)}</time>
         &mdash;
-        <time class="event__end-time" datetime="${formatStringToDateTime(dateTo)}">${formatStringToShortDate(dateTo)}</time>
+        <time class="event__end-time" datetime="${formatStringToDateTime(dateTo)}">${formatStringToTime(dateTo)}</time>
       </p>
       <p class="event__duration">${getPointDuration(dateFrom, dateTo)}</p>
     </div>

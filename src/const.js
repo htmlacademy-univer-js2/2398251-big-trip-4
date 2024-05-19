@@ -99,6 +99,23 @@ const Mode = {
   EDITING: 'editing',
 };
 
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+const EditType = {
+  EDITING: 'EDITING',
+  CREATING: 'CREATING'
+};
+
+const ButtonLabel = {
+  CANCEL_DEFAULT: 'Cancel',
+  DELETE_DEFAULT: 'Delete',
+  SAVE_DEFAULT: 'Save'
+};
+
 const OFFER_COUNT = Math.floor(Math.random() * 4 + 1);
 const DESTINATION_COUNT = 5;
 const POINT_COUNT = 5;
@@ -119,5 +136,8 @@ export {
   Mode,
   SortType,
   EnabledSortType,
-  UpdateType
+  UpdateType,
+  UserAction,
+  EditType,
+  ButtonLabel
 };

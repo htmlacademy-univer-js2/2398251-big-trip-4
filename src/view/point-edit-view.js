@@ -1,8 +1,34 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { CITIES, POINT_EMPTY, TYPES } from '../const.js';
+import { CITIES, POINT_EMPTY, TYPES, EditType, ButtonLabel } from '../const.js';
 import { formatStringToDateTime} from '../util.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+
+function createSaveButtonTemplate() {
+  const label = ButtonLabel.SAVE_DEFAULT;
+  return `<button class="event__save-btn btn btn--blue" type="submit">${label}</button>`;
+}
+
+function createResetButtonTemplate({pointType}) {
+  const label = pointType === EditType.CREATING
+    ? ButtonLabel.CANCEL_DEFAULT
+    : ButtonLabel.DELETE_DEFAULT;
+  return `<button class="event__reset-btn" type="reset">${label}</button>`;
+}
+
+function createRollupButtonTemplate() {
+  return `
+    <button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>
+  `;
+}
+
+function createPointEditControlsTemplate({pointType}) {
+  return `
+    ${createSaveButtonTemplate()}
+    ${createResetButtonTemplate({pointType})}
+    ${(pointType === EditType.EDITING) ? createRollupButtonTemplate() : ''}
+  `;
+}
 
 function createPointCitiesOptionsTemplate() {
   return `
@@ -46,7 +72,7 @@ function createPointOffersTemplate({offersId, currentOffers}) {
   return `<div class="event__available-offers">${offerItems}</div>`;
 }
 
-function createPointEditTemplate({ state, pointDestination, pointOffers }) {
+function createPointEditTemplate({ state, pointDestination, pointOffers, pointType }) {
   const {point} = state;
   const { basePrice, dateFrom, dateTo, type } = point;
 
@@ -79,10 +105,10 @@ function createPointEditTemplate({ state, pointDestination, pointOffers }) {
         </div>
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatStringToDateTime(dateFrom)}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${ point.dateFrom ? formatStringToDateTime(dateFrom) : '' }">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatStringToDateTime(dateTo)}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${ point.dateTo ? formatStringToDateTime(dateTo) : '' }">
         </div>
         <div class="event__field-group  event__field-group--price">
           <label class="event__label" for="event-price-1">
@@ -91,8 +117,7 @@ function createPointEditTemplate({ state, pointDestination, pointOffers }) {
           </label>
           <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
         </div>
-        <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Cancel</button>
+        ${createPointEditControlsTemplate({pointType})}
       </header>
       <section class="event__details">
         ${(currentOffers.length !== 0) ? `<section class="event__section  event__section--offers">
@@ -118,15 +143,19 @@ export default class PointEditView extends AbstractStatefulView {
   #pointOffers = null;
   #handleSubmitClick = null;
   #handleResetClick = null;
+  #handleDeleteClick = null;
   #datepickerFrom = null;
   #datepickerTo = null;
+  #pointType;
 
-  constructor({point = POINT_EMPTY, pointDestination, pointOffers, onSubmitClick, onResetClick}) {
+  constructor({point = POINT_EMPTY, pointDestination, pointOffers, onSubmitClick, onResetClick, onDeleteClick, pointType = EditType.EDITING}) {
     super();
     this.#pointDestination = pointDestination;
     this.#pointOffers = pointOffers;
     this.#handleSubmitClick = onSubmitClick;
     this.#handleResetClick = onResetClick;
+    this.#handleDeleteClick = onDeleteClick;
+    this.#pointType = pointType;
 
     this._setState(PointEditView.parsePointToState({point}));
     this._restoreHandlers();
@@ -136,7 +165,8 @@ export default class PointEditView extends AbstractStatefulView {
     return createPointEditTemplate({
       state: this._state,
       pointDestination: this.#pointDestination,
-      pointOffers: this.#pointOffers
+      pointOffers: this.#pointOffers,
+      pointType: this.#pointType
     });
   }
 
@@ -157,7 +187,14 @@ export default class PointEditView extends AbstractStatefulView {
   };
 
   _restoreHandlers = () => {
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#resetClickHandler);
+    if (this.#pointType === EditType.EDITING) {
+      this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#resetClickHandler);
+      this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
+    }
+
+    if (this.#pointType === EditType.CREATING) {
+      this.element.querySelector('.event__reset-btn').addEventListener('click', this.#resetClickHandler);
+    }
 
     this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
 
@@ -170,6 +207,11 @@ export default class PointEditView extends AbstractStatefulView {
     this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
 
     this.#setDatepickers();
+  };
+
+  #deleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(PointEditView.parseStateToPoint(this._state));
   };
 
   #resetClickHandler = (evt) => {
@@ -210,7 +252,7 @@ export default class PointEditView extends AbstractStatefulView {
     this._setState({
       point: {
         ...this._state.point,
-        offers: checkedBoxes.map((element) => element.dataset.offerId)
+        offers: checkedBoxes.map((element) => element.id)
       }
     });
   };
@@ -219,7 +261,7 @@ export default class PointEditView extends AbstractStatefulView {
     this._setState({
       point: {
         ...this._state.point,
-        basePrice: evt.target.valueAsNumber
+        basePrice: evt.target.value
       }
     });
   };
