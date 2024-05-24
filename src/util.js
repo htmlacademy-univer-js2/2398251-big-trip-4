@@ -114,6 +114,12 @@ function sortPointsByTime(pointA, pointB) {
   return durationB - durationA;
 }
 
+function isBigDifference(pointA, pointB) {
+  return pointA.dateFrom !== pointB.dateFrom
+  || pointA.basePrice !== pointB.basePrice
+  || getPointDuration(pointA.dateFrom, pointA.dateTo) !== getPointDuration(pointB.dateFrom, pointB.dateTo);
+}
+
 
 export {
   getRandomInteger,
@@ -131,5 +137,6 @@ export {
   updateItem,
   sortPointsByDay,
   sortPointsByPrice,
-  sortPointsByTime
+  sortPointsByTime,
+  isBigDifference
 };
