@@ -3,10 +3,11 @@ import PointPresenter from './point-presenter.js';
 import EventListView from '../view/event-list-view.js';
 import NewPointPresenter from './new-point-presenter.js';
 import MessageView from '../view/message-view.js';
-import { render, replace, remove } from '../framework/render.js';
+import LoadingView from '../view/loading-view.js';
+import { render, replace, remove, RenderPosition } from '../framework/render.js';
 import { SortType, UpdateType, EnabledSortType, UserAction, FilterType } from '../const.js';
 import { sort } from '../utils/sort.js';
-import { filter } from '../mock/filter.js';
+import { filter } from '../utils/filter.js';
 
 export default class BoardPresenter {
   #container = null;
@@ -24,9 +25,13 @@ export default class BoardPresenter {
 
   #currentSortType = SortType.DAY;
   #isCreating = false;
+  #isLoading = true;
+  #isLoadingError = false;
 
   #newPointPresenter = null;
   #newPointButtonPresenter = null;
+
+  #loadingComponent = new LoadingView();
 
   constructor({ container, destinationsModel, offersModel, pointsModel, filterModel, newPointButtonPresenter }) {
     this.#container = container;
@@ -86,6 +91,10 @@ export default class BoardPresenter {
     });
   };
 
+  #renderLoading = () => {
+    render(this.#loadingComponent, this.#container, RenderPosition.AFTERBEGIN);
+  };
+
   #clearPoints = () => {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
@@ -103,7 +112,7 @@ export default class BoardPresenter {
       }));
 
     this.#sortComponent = new SortView({
-      sortType: sortTypes,
+      items: sortTypes,
       onItemChange: this.#sortTypeChangeHandler
     });
 
@@ -127,6 +136,18 @@ export default class BoardPresenter {
   };
 
   #renderBoard = () => {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
+
+    if (this.#isLoadingError) {
+      this.#clearBoard({ resetSortType: true });
+      remove(this.#sortComponent);
+      this.#sortComponent = null;
+      return;
+    }
+
     if (this.points.length === 0 && !this.#isCreating) {
       this.#renderMessage();
       return;
@@ -142,6 +163,7 @@ export default class BoardPresenter {
     remove(this.#messageComponent);
     remove(this.#sortComponent);
     this.#sortComponent = null;
+    remove(this.#loadingComponent);
 
     if (resetSortType) {
       this.#currentSortType = SortType.DAY;
@@ -161,6 +183,17 @@ export default class BoardPresenter {
         this.#clearBoard({resetSortType: true});
         this.#renderBoard();
         break;
+      case UpdateType.INIT:
+        if (data.isError) {
+          this.#isLoadingError = true;
+          this.#renderBoard();
+          break;
+        } else {
+          this.#isLoading = false;
+          remove(this.#loadingComponent);
+          this.#renderBoard();
+          break;
+        }
     }
   };
 

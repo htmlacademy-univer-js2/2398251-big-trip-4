@@ -91,7 +91,8 @@ const EnabledSortType = {
 const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
-  MAJOR: 'MAJOR'
+  MAJOR: 'MAJOR',
+  INIT: 'INIT'
 };
 
 const Mode = {
@@ -114,6 +115,11 @@ const ButtonLabel = {
   CANCEL_DEFAULT: 'Cancel',
   DELETE_DEFAULT: 'Delete',
   SAVE_DEFAULT: 'Save'
+};
+
+const RequestMethod = {
+  GET: 'GET',
+  PUT: 'PUT'
 };
 
 const OFFER_COUNT = Math.floor(Math.random() * 4 + 1);
@@ -139,5 +145,6 @@ export {
   UpdateType,
   UserAction,
   EditType,
-  ButtonLabel
+  ButtonLabel,
+  RequestMethod
 };

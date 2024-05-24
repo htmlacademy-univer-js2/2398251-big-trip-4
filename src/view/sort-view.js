@@ -23,9 +23,9 @@ export default class SortView extends AbstractView {
   #items = null;
   #handleSortTypeChange = null;
 
-  constructor({sortType, onItemChange}) {
+  constructor({items, onItemChange}) {
     super();
-    this.#items = sortType;
+    this.#items = items;
     this.#handleSortTypeChange = onItemChange;
 
     this.element.addEventListener('change', this.#sortTypeChangeHandler);

@@ -189,7 +189,7 @@ export default class PointEditView extends AbstractStatefulView {
 
   _restoreHandlers = () => {
     if (this.#pointType === EditType.EDITING) {
-      this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#resetClickHandler);
+      this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollUpClickHandler);
       this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
     }
 
@@ -223,6 +223,11 @@ export default class PointEditView extends AbstractStatefulView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this.#handleSubmitClick(PointEditView.parseStateToPoint(this._state));
+  };
+
+  #rollUpClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleResetClick();
   };
 
   #typeChangeHandler = (evt) => {
