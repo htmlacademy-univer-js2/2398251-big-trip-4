@@ -47,7 +47,6 @@ export default class MockService {
     return Array.from({length: POINT_COUNT}, () => {
       const type = getRandomValue(TYPES);
       const destination = getRandomValue(this.#destinations);
-
       const hasOffers = getRandomInteger(0, 1);
       const offersByType = this.#offers.find((offerByType) => offerByType.type === type);
 
@@ -59,5 +58,16 @@ export default class MockService {
 
       return generatePoint(type, destination.id, offerIds);
     });
+  }
+
+  updatePoint(updatedPoint) {
+    return updatedPoint;
+  }
+
+  addPoint(data) {
+    return {...data, id: crypto.randomUUID()};
+  }
+
+  deletePoint() {
   }
 }

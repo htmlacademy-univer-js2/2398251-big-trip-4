@@ -65,7 +65,7 @@ const Duration = {
   MINUTE: 59
 };
 
-const FilterTypes = {
+const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
   PRESENT: 'present',
@@ -88,9 +88,32 @@ const EnabledSortType = {
   [SortType.OFFERS]: false
 };
 
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR'
+};
+
 const Mode = {
   DEFAULT: 'default',
   EDITING: 'editing',
+};
+
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
+
+const EditType = {
+  EDITING: 'EDITING',
+  CREATING: 'CREATING'
+};
+
+const ButtonLabel = {
+  CANCEL_DEFAULT: 'Cancel',
+  DELETE_DEFAULT: 'Delete',
+  SAVE_DEFAULT: 'Save'
 };
 
 const OFFER_COUNT = Math.floor(Math.random() * 4 + 1);
@@ -109,8 +132,12 @@ export {
   OFFER_COUNT,
   DESTINATION_COUNT,
   POINT_COUNT,
-  FilterTypes,
+  FilterType,
   Mode,
   SortType,
-  EnabledSortType
+  EnabledSortType,
+  UpdateType,
+  UserAction,
+  EditType,
+  ButtonLabel
 };

@@ -1,18 +1,16 @@
-import { OFFER_COUNT, PRICE } from '../const.js';
+import { PRICE } from '../const.js';
 import { getDate, getRandomInteger } from '../util.js';
-import { generateOffer } from './offer.js';
-import { generateDestination } from './destination.js';
 
-function generatePoint(type) {
+function generatePoint(type, destinationId, offerIds) {
   return {
     id: crypto.randomUUID(),
     basePrice: getRandomInteger(PRICE.MIN, PRICE.MAX),
     dateFrom: getDate({ next: false }),
     dateTo: getDate({ next: true }),
-    destination: generateDestination(),
+    destination: destinationId,
     isFavorite: !!getRandomInteger(0, 1),
-    offers: Array.from({ length: OFFER_COUNT }, () => generateOffer()),
-    type: type
+    offers: offerIds,
+    type
   };
 }
 
