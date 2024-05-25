@@ -5,9 +5,10 @@ import NewPointPresenter from './new-point-presenter.js';
 import MessageView from '../view/message-view.js';
 import LoadingView from '../view/loading-view.js';
 import { render, replace, remove, RenderPosition } from '../framework/render.js';
-import { SortType, UpdateType, EnabledSortType, UserAction, FilterType } from '../const.js';
+import { SortType, UpdateType, EnabledSortType, UserAction, FilterType, TimeLimit } from '../const.js';
 import { sort } from '../utils/sort.js';
 import { filter } from '../utils/filter.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 export default class BoardPresenter {
   #container = null;
@@ -32,6 +33,10 @@ export default class BoardPresenter {
   #newPointButtonPresenter = null;
 
   #loadingComponent = new LoadingView();
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TimeLimit.LOWER_LIMIT,
+    upperLimit: TimeLimit.UPPER_LIMIT
+  });
 
   constructor({ container, destinationsModel, offersModel, pointsModel, filterModel, newPointButtonPresenter }) {
     this.#container = container;
@@ -45,7 +50,7 @@ export default class BoardPresenter {
       container: this.#eventListComponent.element,
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel,
-      onDataChange: this.#pointChangeHandler,
+      onDataChange: this.#viewActionHandler,
       onDestroy: this.#newPointDestroyHandler
     });
 
@@ -77,7 +82,7 @@ export default class BoardPresenter {
       container: this.#eventListComponent.element,
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel,
-      onDataChange: this.#pointChangeHandler,
+      onDataChange: this.#viewActionHandler,
       onModeChange: this.#modeChangeHandler
     });
 
@@ -138,8 +143,10 @@ export default class BoardPresenter {
   #renderBoard = () => {
     if (this.#isLoading) {
       this.#renderLoading();
+      this.#newPointButtonPresenter.disableButton();
       return;
     }
+    this.#newPointButtonPresenter.enableButton();
 
     if (this.#isLoadingError) {
       this.#clearBoard({ resetSortType: true });
@@ -158,7 +165,7 @@ export default class BoardPresenter {
     this.#renderPoints();
   };
 
-  #clearBoard = ({resetSortType = false} = {}) => {
+  #clearBoard = ({ resetSortType = false } = {}) => {
     this.#clearPoints();
     remove(this.#messageComponent);
     remove(this.#sortComponent);
@@ -180,7 +187,7 @@ export default class BoardPresenter {
         this.#renderBoard();
         break;
       case UpdateType.MAJOR:
-        this.#clearBoard({resetSortType: true});
+        this.#clearBoard({ resetSortType: true });
         this.#renderBoard();
         break;
       case UpdateType.INIT:
@@ -197,18 +204,35 @@ export default class BoardPresenter {
     }
   };
 
-  #pointChangeHandler = (actionType, updateType, update) => {
+  #viewActionHandler = async (actionType, updateType, update) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#pointsModel.update(updateType, update);
+        this.#pointPresenters.get(update.id).setSaving();
+        try {
+          await this.#pointsModel.update(updateType, update);
+        } catch {
+          this.#pointPresenters.get(update.id).setAborting();
+        }
         break;
       case UserAction.DELETE_POINT:
-        this.#pointsModel.delete(updateType, update);
+        this.#pointPresenters.get(update.id).setDeleting();
+        try {
+          await this.#pointsModel.delete(updateType, update);
+        } catch {
+          this.#pointPresenters.get(update.id).setAborting();
+        }
         break;
       case UserAction.ADD_POINT:
-        this.#pointsModel.add(updateType, update);
+        this.#newPointPresenter.setSaving();
+        try {
+          await this.#pointsModel.add(updateType, update);
+        } catch {
+          this.#newPointPresenter.setAborting();
+        }
         break;
     }
+    this.#uiBlocker.unblock();
   };
 
   #modeChangeHandler = () => {
@@ -216,7 +240,7 @@ export default class BoardPresenter {
     this.#newPointPresenter.destroy();
   };
 
-  #newPointDestroyHandler = ({isCanceled}) => {
+  #newPointDestroyHandler = ({ isCanceled }) => {
     this.#isCreating = false;
     this.#newPointButtonPresenter.enableButton();
     if (this.points.length === 0 && isCanceled) {
