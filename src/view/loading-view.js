@@ -1,14 +1,35 @@
 import AbstractView from '../framework/view/abstract-view';
 
-function createLoadingTemplate() {
+const Message = {
+  'LOADING': 'Loading...',
+  'LOADING_ERROR': 'Failed to load latest route information',
+};
+
+function createLoadingTemplate({message}) {
   return (
-    `<p class="trip-events__msg">Loading...
+    `<p class="trip-events__msg">${message}
     </p >`
   );
 }
 
 export default class LoadingView extends AbstractView {
+  #isLoading;
+  #isLoadingError;
+
+  constructor({isLoading, isLoadingError}) {
+    super();
+    this.#isLoading = isLoading;
+    this.#isLoadingError = isLoadingError;
+  }
+
   get template() {
-    return createLoadingTemplate();
+    let message;
+    if (this.#isLoading) {
+      message = Message['LOADING'];
+    } else if (this.#isLoadingError) {
+      message = Message['LOADING_ERROR'];
+    }
+
+    return createLoadingTemplate({message});
   }
 }

@@ -1,47 +1,3 @@
-const CITIES = [
-  'Chamonix',
-  'Geneva',
-  'Amsterdam',
-  'Helsinki',
-  'Oslo',
-  'Kopenhagen',
-  'Den Haag',
-  'Rotterdam',
-  'Saint Petersburg',
-  'Moscow',
-  'Sochi',
-  'Tokio',
-];
-
-const DESCRIPTIONS = [
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  'Cras aliquet varius magna, non porta ligula feugiat eget.',
-  'Fusce tristique felis at fermentum pharetra.'
-];
-
-const OFFERS = [
-  'Order Uber',
-  'Add luggage',
-  'Switch to comfort',
-  'Rent a car',
-  'Add breakfast',
-  'Book tickets',
-  'Lunch in city',
-  'Upgrade to a business class'
-];
-
-const TYPES = [
-  'taxi',
-  'bus',
-  'train',
-  'ship',
-  'drive',
-  'flight',
-  'check-in',
-  'sightseeing',
-  'restaurant'
-];
-
 const DEFAULT_TYPE = 'flight';
 
 const POINT_EMPTY = {
@@ -52,11 +8,6 @@ const POINT_EMPTY = {
   isFavorite: false,
   offers: [],
   type: DEFAULT_TYPE
-};
-
-const PRICE = {
-  MIN: 1,
-  MAX: 1000
 };
 
 const Duration = {
@@ -131,22 +82,12 @@ const TimeLimit = {
   UPPER_LIMIT: 1000,
 };
 
-const OFFER_COUNT = Math.floor(Math.random() * 4 + 1);
-const DESTINATION_COUNT = 5;
-const POINT_COUNT = 5;
+const DESTINATION_ITEMS_LENGTH = 3;
 
 export {
-  CITIES,
-  OFFERS,
-  DESCRIPTIONS,
-  PRICE,
   Duration,
-  TYPES,
   DEFAULT_TYPE,
   POINT_EMPTY,
-  OFFER_COUNT,
-  DESTINATION_COUNT,
-  POINT_COUNT,
   FilterType,
   Mode,
   SortType,
@@ -156,5 +97,6 @@ export {
   EditType,
   ButtonLabel,
   RequestMethod,
-  TimeLimit
+  TimeLimit,
+  DESTINATION_ITEMS_LENGTH,
 };

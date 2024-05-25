@@ -26,16 +26,16 @@ function createPointTemplate({ point, pointDestination, pointOffers }) {
 
   return (`<li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="${formatStringToDateTime(dateFrom)}">${formatStringToShortDate(dateFrom)}</time>
+    <time class="event__date" datetime=${formatStringToDateTime(dateFrom)}>${formatStringToShortDate(dateFrom)}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${he.encode(type)} ${he.encode(pointDestination.name)}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="${formatStringToDateTime(dateFrom)}">${formatStringToShortDate(dateFrom)}</time>
+        <time class="event__start-time" datetime=${formatStringToDateTime(dateFrom)}>${formatStringToShortDate(dateFrom)}</time>
         &mdash;
-        <time class="event__end-time" datetime="${formatStringToDateTime(dateTo)}">${formatStringToTime(dateTo)}</time>
+        <time class="event__end-time" datetime=${formatStringToDateTime(dateTo)}>${formatStringToTime(dateTo)}</time>
       </p>
       <p class="event__duration">${getPointDuration(point)}</p>
     </div>
@@ -86,7 +86,11 @@ export default class PointView extends AbstractView {
 
   #editClickHandler = (evt) => {
     evt.preventDefault();
-    this.#onEditClick();
+    const disabledResetButton = document.querySelector('.event__reset-btn[disabled]');
+    const disabledSavingButton = document.querySelector('.event__save-btn[disabled]');
+    if (!disabledResetButton && !disabledSavingButton) {
+      this.#onEditClick();
+    }
   };
 
   #favoriteClickHandler = (evt) => {

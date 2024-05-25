@@ -26,17 +26,18 @@ export default class BoardPresenter {
 
   #currentSortType = SortType.DAY;
   #isCreating = false;
-  #isLoading = true;
-  #isLoadingError = false;
 
   #newPointPresenter = null;
   #newPointButtonPresenter = null;
 
-  #loadingComponent = new LoadingView();
+  #loadingComponent = null;
   #uiBlocker = new UiBlocker({
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
   });
+
+  #isLoading = true;
+  #isLoadingError = false;
 
   constructor({ container, destinationsModel, offersModel, pointsModel, filterModel, newPointButtonPresenter }) {
     this.#container = container;
@@ -96,7 +97,8 @@ export default class BoardPresenter {
     });
   };
 
-  #renderLoading = () => {
+  #renderLoading = ({isLoading, isLoadingError}) => {
+    this.#loadingComponent = new LoadingView({isLoading, isLoadingError});
     render(this.#loadingComponent, this.#container, RenderPosition.AFTERBEGIN);
   };
 
@@ -141,8 +143,10 @@ export default class BoardPresenter {
   };
 
   #renderBoard = () => {
+    const isLoading = this.#isLoading;
+    const isLoadingError = this.#isLoadingError;
     if (this.#isLoading) {
-      this.#renderLoading();
+      this.#renderLoading({isLoading, isLoadingError});
       this.#newPointButtonPresenter.disableButton();
       return;
     }
@@ -152,6 +156,7 @@ export default class BoardPresenter {
       this.#clearBoard({ resetSortType: true });
       remove(this.#sortComponent);
       this.#sortComponent = null;
+      this.#renderLoading({isLoading, isLoadingError});
       return;
     }
 

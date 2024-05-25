@@ -12,7 +12,6 @@ export default class PointsModel extends Observable {
   constructor({ service, destinationsModel, offersModel }) {
     super();
     this.#service = service;
-    this.#points = this.#service.getPoints();
     this.#destinationsModel = destinationsModel;
     this.#offersModel = offersModel;
   }
