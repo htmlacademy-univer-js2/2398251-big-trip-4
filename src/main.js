@@ -9,7 +9,7 @@ import PointsModel from './model/points-model.js';
 import FilterModel from './model/filter-model.js';
 import { render, RenderPosition } from './framework/render.js';
 
-const AUTHORIZATION = 'Basic YWxpbmE6b3N0aW4xNzg=';
+const AUTHORIZATION = 'Basic gh3w780ld67893b';
 const END_POINT = 'https://21.objects.htmlacademy.pro/big-trip';
 
 const bodyElement = document.querySelector('body');
