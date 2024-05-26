@@ -114,10 +114,12 @@ export default class PointPresenter {
   };
 
   #replacePointToForm = () => {
-    replace(this.#pointEditComponent, this.#pointComponent);
-    document.addEventListener('keydown', this.#escKeyDownHandler);
-    this.#handleModeChange();
-    this.#mode = Mode.EDITING;
+    if (!this.#pointEditComponent._state.isSaving) {
+      replace(this.#pointEditComponent, this.#pointComponent);
+      document.addEventListener('keydown', this.#escKeyDownHandler);
+      this.#handleModeChange();
+      this.#mode = Mode.EDITING;
+    }
   };
 
   #replaceFormToPoint = () => {
@@ -127,7 +129,7 @@ export default class PointPresenter {
   };
 
   #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape') {
+    if (evt.key === 'Escape' && !this.#pointEditComponent._state.isDisabled) {
       evt.preventDefault();
       this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
@@ -149,21 +151,25 @@ export default class PointPresenter {
     );
   };
 
-  #formSubmitHandler = (updatedPoint) => {
+  #formSubmitHandler = async (updatedPoint) => {
     const isMinor = isBigDifference(updatedPoint, this.#point);
 
-    this.#handleDataChange(
+    await this.#handleDataChange(
       UserAction.UPDATE_POINT,
       isMinor ? UpdateType.MINOR : UpdateType.PATCH,
       updatedPoint
     );
 
-    this.#replaceFormToPoint();
+    if (!this.#pointEditComponent._state.isDisabled) {
+      this.#replaceFormToPoint();
+    }
   };
 
   #resetButtonClickHandler = () => {
-    this.#pointEditComponent.reset(this.#point);
-    this.#replaceFormToPoint();
+    if (!this.#pointEditComponent._state.isDisabled || this.#pointEditComponent._state.isSavingCompleted) {
+      this.#pointEditComponent.reset(this.#point);
+      this.#replaceFormToPoint();
+    }
   };
 
   #deleteButtonClickHandler = (point) => {
