@@ -330,7 +330,8 @@ export default class PointEditView extends AbstractStatefulView {
       {
         ...commonConfig,
         defaultDate: this._state.point.dateFrom,
-        onClose: () => { this.#dateFromOpenHandler(); },
+        onClose: this.#dateFromCloseHandler,
+        onOpen: () => { this.#dateFromOpenHandler(); },
         maxDate: this._state.point.dateTo,
       },
     );

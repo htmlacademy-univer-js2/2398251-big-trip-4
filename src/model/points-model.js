@@ -1,7 +1,7 @@
 import Observable from '../framework/observable.js';
 import { updateItem } from '../util.js';
 import { UpdateType } from '../const.js';
-import { adaptToClient, adaptToServer } from '../utils/point.js';
+import { adaptToClient, adaptToServer } from '../utils/adapter.js';
 
 export default class PointsModel extends Observable {
   #service = null;
@@ -53,7 +53,7 @@ export default class PointsModel extends Observable {
 
   async add(updateType, point) {
     try {
-      const addedPoint = this.#service.addPoint(point);
+      const addedPoint = await this.#service.addPoint(adaptToServer(point));
       const adaptedPoint = adaptToClient(addedPoint);
       this.#points.push(adaptedPoint);
       this._notify(updateType, adaptedPoint);
