@@ -125,7 +125,7 @@ function createPointEditTemplate({ state, pointDestination, pointOffers, pointTy
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}${(isDisabled) ? 'disabled' : ''}">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(String(basePrice))}" ${(isDisabled) ? 'disabled' : ''}>
         </div>
         ${createPointEditControlsTemplate({ pointType, isSaving, isDeleting, isDisabled })}
       </header>
@@ -219,6 +219,12 @@ export default class PointEditView extends AbstractStatefulView {
     this.#setDatepickers();
   };
 
+  checkFormValidation = () => {
+    const { point } = this._state;
+    const isValid = point.basePrice > 0 && point.dateFrom && point.dateTo && point.destination;
+    this.updateElement({ isSaveButtonDisabled: !isValid });
+  };
+
   #deleteClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleDeleteClick(PointEditView.parseStateToPoint(this._state));
@@ -265,6 +271,8 @@ export default class PointEditView extends AbstractStatefulView {
         destination: selectedDestinationId
       }
     });
+
+    this.checkFormValidation();
   };
 
   #offerChangeHandler = () => {
@@ -330,7 +338,8 @@ export default class PointEditView extends AbstractStatefulView {
       {
         ...commonConfig,
         defaultDate: this._state.point.dateFrom,
-        onClose: () => { this.#dateFromOpenHandler(); },
+        onClose: this.#dateFromCloseHandler,
+        onOpen: () => { this.#dateFromOpenHandler(); },
         maxDate: this._state.point.dateTo,
       },
     );

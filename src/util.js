@@ -26,7 +26,7 @@ function getRandomValue(items) {
 }
 
 function formatStringToDateTime(date) {
-  return dayjs(date).format('YYYY-MM-DDTHH:mm');
+  return dayjs(date).format('DD/MM/YY HH:mm');
 }
 
 function formatStringToShortDate(date) {
